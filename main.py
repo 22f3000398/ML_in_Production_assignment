@@ -75,7 +75,6 @@ async def monitor_requests(request: Request, call_next):
     return response
 
 
-# --- Load model once when API starts ------------------------------
 
 try:
 
@@ -87,7 +86,6 @@ except FileNotFoundError:
     model = None
 
 
-# --- Request format ----------------------------------------------
 
 class PredictionRequest(BaseModel):
 
@@ -101,15 +99,13 @@ class PredictionRequest(BaseModel):
     Longitude: float = Field(..., ge=-180, le=180)
 
 
-# --- Response format ---------------------------------------------
-
 class PredictionResponse(BaseModel):
 
     prediction: float
     prediction_dollars: str
 
 
-# --- Home page ---------------------------------------------------
+
 
 @app.get("/")
 def root():
@@ -123,7 +119,7 @@ def root():
     )
 
 
-# --- Health check ------------------------------------------------
+
 
 @app.get("/health")
 def health():
@@ -134,7 +130,7 @@ def health():
     }
 
 
-# --- Prediction --------------------------------------------------
+
 
 @app.post(
     "/predict",
@@ -152,14 +148,11 @@ def predict(request: PredictionRequest):
             )
         )
 
-    # Start prediction timer
+    
     start = time.perf_counter()
 
-    # Get request data
     request_body = request.model_dump()
 
-    # IMPORTANT:
-    # Same feature order used during model training
     features = [[
         request.MedInc,
         request.HouseAge,
@@ -171,12 +164,10 @@ def predict(request: PredictionRequest):
         request.Longitude
     ]]
 
-    # Make prediction
     prediction = float(
         model.predict(features)[0]
     )
 
-    # Convert from $100,000 units to dollars
     prediction_dollars = prediction * 100000
 
     result = {
@@ -184,12 +175,11 @@ def predict(request: PredictionRequest):
         "prediction_dollars": f"${prediction_dollars:,.2f}"
     }
 
-    # Calculate prediction latency
     latency_ms = (
         time.perf_counter() - start
     ) * 1000
 
-    # Log prediction
+
     log_prediction_event(
         request_body,
         result,
