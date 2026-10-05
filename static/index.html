@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>California Housing Price Predictor</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .feature {
+            margin-bottom: 25px;
+        }
+
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .feature-name {
+            font-weight: bold;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #777;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f0fdf4;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-title {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .price {
+            font-size: 40px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .error {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .info {
+            margin-top: 25px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1e40af;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>California Housing Price Predictor</h1>
+
+        <p class="subtitle">
+            Adjust the values below and predict the median house value.
+        </p>
+
+
+        <!-- Median Income -->
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    Median Income
+                </span>
+
+                <span class="value" id="MedIncValue">
+                    5.0
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="MedInc"
+                min="0"
+                max="15"
+                step="0.01"
+                value="5"
+            >
+
+            <div class="range-labels">
+                <span>0</span>
+                <span>15</span>
+            </div>
+
+        </div>
+
+
+        <!-- House Age -->
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    House Age
+                </span>
+
+                <span class="value" id="HouseAgeValue">
+                    25
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="HouseAge"
+                min="0"
+                max="52"
+                step="0.1"
+                value="25"
+            >
+
+            <div class="range-labels">
+                <span>0 years</span>
+                <span>52 years</span>
+            </div>
+
+        </div>
+
+
+        <!-- Average Rooms -->
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    Average Rooms
+                </span>
+
+                <span class="value" id="AveRoomsValue">
+                    5
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="AveRooms"
+                min="0"
+                max="15"
+                step="0.01"
+                value="5"
+            >
+
+            <div class="range-labels">
+                <span>0</span>
+                <span>15</span>
+            </div>
+
+        </div>
+
+
+        <!-- Average Bedrooms -->
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    Average Bedrooms
+                </span>
+
+                <span class="value" id="AveBedrmsValue">
+                    1
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="AveBedrms"
+                min="0"
+                max="5"
+                step="0.01"
+                value="1"
+            >
+
+            <div class="range-labels">
+                <span>0</span>
+                <span>5</span>
+            </div>
+
+        </div>
+
+
+        <!-- Population -->
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    Population
+                </span>
+
+                <span class="value" id="PopulationValue">
+                    1000
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="Population"
+                min="0"
+                max="35000"
+                step="10"
+                value="1000"
+            >
+
+            <div class="range-labels">
+                <span>0</span>
+                <span>35,000</span>
+            </div>
+
+        </div>
+
+
+        <!-- Average Occupancy -->
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    Average Occupancy
+                </span>
+
+                <span class="value" id="AveOccupValue">
+                    3
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="AveOccup"
+                min="0"
+                max="20"
+                step="0.01"
+                value="3"
+            >
+
+            <div class="range-labels">
+                <span>0</span>
+                <span>20</span>
+            </div>
+
+        </div>
+
+
+        <!-- Latitude -->
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    Latitude
+                </span>
+
+                <span class="value" id="LatitudeValue">
+                    35
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="Latitude"
+                min="32.5"
+                max="42"
+                step="0.01"
+                value="35"
+            >
+
+            <div class="range-labels">
+                <span>32.5</span>
+                <span>42</span>
+            </div>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-header">
+                <span class="feature-name">
+                    Longitude
+                </span>
+
+                <span class="value" id="LongitudeValue">
+                    -119
+                </span>
+            </div>
+
+            <input
+                type="range"
+                id="Longitude"
+                min="-125"
+                max="-114"
+                step="0.01"
+                value="-119"
+            >
+
+            <div class="range-labels">
+                <span>-125</span>
+                <span>-114</span>
+            </div>
+
+        </div>
+
+
+        <button id="predictButton" onclick="predictHouse()">
+            Predict House Price
+        </button>
+
+
+        <div class="result" id="result">
+
+            <div class="result-title">
+                Predicted Median House Value
+            </div>
+
+            <div class="price" id="price">
+                $0
+            </div>
+
+        </div>
+
+
+        <div class="error" id="error"></div>
+
+
+        <div class="info">
+            Adjust the sliders and click
+            <strong>Predict House Price</strong>.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // All slider IDs
+    const sliders = [
+        "MedInc",
+        "HouseAge",
+        "AveRooms",
+        "AveBedrms",
+        "Population",
+        "AveOccup",
+        "Latitude",
+        "Longitude"
+    ];
+
+
+    // Update displayed value when slider moves
+    sliders.forEach(function(id) {
+
+        const slider = document.getElementById(id);
+        const value = document.getElementById(id + "Value");
+
+        slider.addEventListener("input", function() {
+            value.textContent = slider.value;
+        });
+
+    });
+
+
+    async function predictHouse() {
+
+        const button = document.getElementById("predictButton");
+        const result = document.getElementById("result");
+        const error = document.getElementById("error");
+        const price = document.getElementById("price");
+
+
+        // Hide old results
+        result.style.display = "none";
+        error.style.display = "none";
+
+
+        // Disable button while predicting
+        button.disabled = true;
+        button.textContent = "Predicting...";
+
+
+        // Create request
+        const data = {
+
+            MedInc: parseFloat(
+                document.getElementById("MedInc").value
+            ),
+
+            HouseAge: parseFloat(
+                document.getElementById("HouseAge").value
+            ),
+
+            AveRooms: parseFloat(
+                document.getElementById("AveRooms").value
+            ),
+
+            AveBedrms: parseFloat(
+                document.getElementById("AveBedrms").value
+            ),
+
+            Population: parseFloat(
+                document.getElementById("Population").value
+            ),
+
+            AveOccup: parseFloat(
+                document.getElementById("AveOccup").value
+            ),
+
+            Latitude: parseFloat(
+                document.getElementById("Latitude").value
+            ),
+
+            Longitude: parseFloat(
+                document.getElementById("Longitude").value
+            )
+        };
+
+
+        try {
+
+            const response = await fetch(
+                "/predict",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+                }
+            );
+
+
+            const resultData = await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    resultData.detail ||
+                    "Prediction failed."
+                );
+
+            }
+
+
+            // Display prediction
+            price.textContent =
+                resultData.prediction_dollars;
+
+            result.style.display = "block";
+
+
+        } catch (err) {
+
+            error.textContent =
+                "Error: " + err.message;
+
+            error.style.display = "block";
+
+        }
+
+
+        // Enable button again
+        button.disabled = false;
+        button.textContent = "Predict House Price";
+
+    }
+
+</script>
+
+</body>
+
+</html>
